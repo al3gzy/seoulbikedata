@@ -29,9 +29,7 @@ This dataset contains hourly and daily rental bike counts along with weather and
 ## Dependencies
 
 - Octave or MATLAB  
-- Packages:  
-  - `io`  
-  - `statistics`  
+- Packages:  `io`  `statistics`  
 
 ---
 
