@@ -129,7 +129,7 @@ for fold = 1:k
       sig_k = sig_k + (x_cent(r,:)' * x_cent(r,:));
     end
     sig_k = sig_k / (size(x_klasa,1) - 1);
-    % epsilon = 1e-5;
+    % epsilon = 1e-1;
     % sig_k = sig_k + epsilon * eye(size(sig_k)); regularizacija matrice
     inv_sig_k = inv(sig_k);
     diff = xts - repmat(mi_k', size(xts,1), 1);
@@ -158,3 +158,20 @@ fprintf('Prosečna greska KNN: %.4f\n', mean(err_knn));
 fprintf('Prosečna greska Linearne klasifikacije: %.4f\n', mean(err_lin));
 fprintf('Prosečna greska LDA: %.4f\n', mean(err_lda));
 fprintf('Prosečna greska QDA: %.4f\n', mean(err_qda));
+
+acc_knn = 1 - err_knn;
+acc_lin = 1 - err_lin;
+acc_lda = 1 - err_lda;
+acc_qda = 1 - err_qda;
+
+folds = 1:k;
+figure;
+plot(folds, acc_knn, '-o', 'DisplayName', 'KNN');
+hold on;
+plot(folds, acc_lin, '-s', 'DisplayName', 'Linearna klasifikacija');
+plot(folds, acc_lda, '-d', 'DisplayName', 'LDA');
+plot(folds, acc_qda, '-^', 'DisplayName', 'QDA');
+xlabel('Fold');
+ylabel('Preciznost (Accuracy)');
+legend('KNN', 'Linearna klasifikacija', 'LDA', 'QDA');grid on;
+hold off;
