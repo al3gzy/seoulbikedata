@@ -102,12 +102,22 @@ for i = 1:k
   ypred = knn_klasifikator(xts, xtr, ytr, 5);
   err = mean(ypred != yval);
   err_knn = [err_knn, err];
-end
+  if i == k
+    TP = sum((ypred == 1) & (yval == 1));
+    TN = sum((ypred == 0) & (yval == 0));
+    FP = sum((ypred == 1) & (yval == 0));
+    FN = sum((ypred == 0) & (yval == 1));
 
+    fprintf('Konfuziona matrica KNN za fold %d (TP, FP, FN, TN): %d %d %d %d\n', i, TP, FP, FN, TN);
+    fprintf('         Pred=0  Pred=1\n');
+    fprintf('Stvar=0:   %4d    %4d\n', TN, FP);
+    fprintf('Stvar=1:   %4d    %4d\n', FN, TP);
+  end
+end
 
 fprintf('Prosečna greška KNN: %.4f\n', mean(err_knn));
 
-%Logisticka regresija
+% Logistička regresija
 err_log = [];
 
 sigmoid = @(z) 1 ./ (1 + exp(-z));
@@ -134,9 +144,24 @@ for i = 1:k
   [theta, ~] = fminunc(@(t)(mean(costFunction(t, xtr, ytr))), initial_theta);
 
   % predikcija
-  ypred = sigmoid(xts * theta) >= 0.5;
-  err = mean(ypred != yval);
+  ypred_prob = sigmoid(xts * theta);
+  ypred_bin = ypred_prob >= 0.5;
+
+  err = mean(ypred_bin != yval);
   err_log = [err_log, err];
+
+  if i == k
+    % ispis mat konfuzije za poslednji fold
+    TP = sum((ypred_bin == 1) & (yval == 1));
+    TN = sum((ypred_bin == 0) & (yval == 0));
+    FP = sum((ypred_bin == 1) & (yval == 0));
+    FN = sum((ypred_bin == 0) & (yval == 1));
+
+    fprintf('Konfuziona matrica za fold %d (TP, FP, FN, TN): %d %d %d %d\n', i, TP, FP, FN, TN);
+    fprintf('         Pred=0  Pred=1\n');
+    fprintf('Stvar=0:   %4d    %4d\n', TN, FP);
+    fprintf('Stvar=1:   %4d    %4d\n', FN, TP);
+  end
 end
 
 fprintf('Prosečna greška Logističke regresije: %.4f\n', mean(err_log));
