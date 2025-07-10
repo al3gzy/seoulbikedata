@@ -32,6 +32,16 @@ y_pred = y_pred_stdzd * y_std + y_mean;
 mse = mean((y_full - y_pred).^2);
 fprintf("Linearna regresija MSE: %.4f\n", mse);
 
+figure;
+plot(y_full, y_pred, 'b.');
+hold on;
+plot([min(y_full), max(y_full)], [min(y_full), max(y_full)], 'r--');
+xlabel('Stvarne vrednosti');
+ylabel('Predikcija');
+title('Linearna regresija');
+grid on;
+legend('Predikcije', 'Idealno');
+
 % k-fold validacija
 X = X_full_sel;
 y = y_full;
@@ -71,6 +81,13 @@ end
 cv_mse_mean = mean(mse_folds);
 fprintf("Prosečan K-fold MSE: %.4f\n", cv_mse_mean);
 
+figure;
+bar(mse_folds);
+xlabel('Fold');
+ylabel('MSE');
+title('K-fold validacija - Linearna regresija');
+grid on;
+
 % Ridge & Lasso regresija
 mu_X = mean(X_train_sel);
 sigma_X = std(X_train_sel);
@@ -95,6 +112,16 @@ y_pred = y_pred_std * y_std + y_mean;
 mse_ridge = mean((y_test - y_pred).^2);
 fprintf("Ridge MSE: %.4f\n", mse_ridge);
 
+figure;
+plot(y_test, y_pred, 'g.');
+hold on;
+plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], 'r--');
+xlabel('Stvarne vrednosti');
+ylabel('Predikcija');
+title('Ridge regresija');
+grid on;
+legend('Predikcije', 'Idealno');
+
 % lasso
 lasso_f = @(b) sum((y_train_std - X_train * b).^2) + lambda * sum(abs(b(2:end)));
 beta_init = zeros(size(X_train,2),1);
@@ -104,6 +131,16 @@ y_pred_std = X_test * beta_lasso;
 y_pred = y_pred_std * y_std + y_mean;
 mse_lasso = mean((y_test - y_pred).^2);
 fprintf("Lasso MSE: %.4f\n", mse_lasso);
+
+figure;
+plot(y_test, y_pred, 'm.');
+hold on;
+plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], 'r--');
+xlabel('Stvarne vrednosti');
+ylabel('Predikcija');
+title('Lasso regresija');
+grid on;
+legend('Predikcije', 'Idealno');
 
 % KNN regresija
 X_knn_raw = X_full_sel;
@@ -144,3 +181,13 @@ end
 y_pred = y_pred_std * y_std + y_mean;
 mse_knn = mean((y_test - y_pred).^2);
 fprintf("KNN regresija (K=%d) MSE: %.4f\n", K, mse_knn);
+
+figure;
+plot(y_test, y_pred, 'b.');
+hold on;
+plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], 'r--');
+xlabel('Stvarne vrednosti');
+ylabel('Predikcija');
+title(sprintf('KNN regresija (K=%d)', K));
+grid on;
+legend('Predikcije', 'Idealno');
