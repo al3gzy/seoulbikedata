@@ -61,7 +61,7 @@ function ypred = knn_klasifikator(xts, xtr, ytr, k)
   end
 end
 
-% K-Fold evluacija
+% K-Fold evaluacija
 err_knn = zeros(1,k);
 err_lin = zeros(1,k);
 err_lda = zeros(1,k);
